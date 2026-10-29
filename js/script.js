@@ -1,5 +1,6 @@
 const gameBoard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-let currentPosition = 4;
+let gameOver = false;
+//creating a player
 function createPlayer(name, mark) {
   return {
     name: name,
@@ -9,21 +10,26 @@ function createPlayer(name, mark) {
 const player1 = createPlayer("player1", "x");
 const player2 = createPlayer("player2", "o");
 let currentPlayer = player1;
+function playRound(position) {
+  if (gameBoard[currentPosition] === 0 && gameOver === false) {
+    gameBoard[currentPosition] = currentPlayer.mark;
+    console.log(gameBoard[currentPosition]);
 
-if (gameBoard[currentPosition] === 0) {
-  gameBoard[currentPosition] = currentPlayer.mark;
-  console.log(gameBoard[currentPosition]);
+    const winner = checkWinner();
 
-  const winner = checkWinner();
+    if (winner !== null) {
+      console.log(`${winner} wins!`);
+      gameOver = true;
+    } else if (checkTie()) {
+      console.log("It's a tie!");
+      gameOver = true;
+    }
 
-  if (winner !== null) {
-    console.log(`${winner} wins!`);
-  }
-
-  if (currentPlayer === player1) {
-    currentPlayer = player2;
-  } else {
-    currentPlayer = player1;
+    if (currentPlayer === player1) {
+      currentPlayer = player2;
+    } else {
+      currentPlayer = player1;
+    }
   }
 }
 const WINNING_COMBINATIONS = [
