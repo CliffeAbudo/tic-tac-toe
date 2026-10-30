@@ -100,6 +100,18 @@ const GameController = (function () {
 
 const DisplayController = (function () {
   const squares = document.querySelectorAll(".square");
+
+  function addEventListeners() {
+    squares.forEach((square) => {
+      square.addEventListener("click", () => {
+        const position = Number(square.dataset.position);
+
+        GameController.playRound(position);
+        renderBoard();
+      });
+    });
+  }
+
   function renderBoard() {
     squares.forEach((square, index) => {
       const value = Gameboard.getBoard()[index];
@@ -111,11 +123,11 @@ const DisplayController = (function () {
       }
     });
   }
+
+  addEventListeners();
+  renderBoard();
+
   return {
     renderBoard,
   };
 })();
-GameController.playRound(1);
-GameController.playRound(3);
-GameController.playRound(7);
-DisplayController.renderBoard();
