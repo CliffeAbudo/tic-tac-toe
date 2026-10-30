@@ -52,6 +52,11 @@ const Gameboard = (function () {
 
     return true;
   }
+  function resetBoard() {
+    for (let i = 0; i < gameBoard.length; i++) {
+      gameBoard[i] = 0;
+    }
+  }
 
   return {
     //gives the rest of game a way to see current board
@@ -63,19 +68,21 @@ const Gameboard = (function () {
     },
     checkWinner,
     checkTie,
+    resetBoard,
   };
 })();
 
 const GameController = (function () {
   let currentPlayer = player1;
   let gameOver = false;
+  let winner = null;
 
   function playRound(position) {
     if (Gameboard.getBoard()[position] === 0 && gameOver === false) {
       Gameboard.placeMark(position, currentPlayer.mark);
       console.log(Gameboard.getBoard()[position]);
 
-      const winner = Gameboard.checkWinner();
+      winner = Gameboard.checkWinner();
 
       if (winner !== null) {
         console.log(`${winner} wins!`);
@@ -92,14 +99,35 @@ const GameController = (function () {
       }
     }
   }
+  function getCurrentPlayer() {
+    return currentPlayer.mark;
+  }
+  function getWinner() {
+    return winner;
+  }
+  function isTie() {
+    return Gameboard.checkTie();
+  }
+  function resetGame() {
+    currentPlayer = player1;
+    gameOver = false;
+    winner = null;
+    Gameboard.resetBoard();
+  }
 
   return {
     playRound,
+    getCurrentPlayer,
+    getWinner,
+    isTie,
+    resetGame,
   };
 })();
 
 const DisplayController = (function () {
   const squares = document.querySelectorAll(".square");
+  const status = document.querySelector("#game-status");
+  const restartButton = document.querySelector("#restart-button");
 
   function addEventListeners() {
     squares.forEach((square) => {
@@ -108,7 +136,16 @@ const DisplayController = (function () {
 
         GameController.playRound(position);
         renderBoard();
+        renderStatus();
       });
+    });
+  }
+
+  function addRestartListener() {
+    restartButton.addEventListener("click", () => {
+      GameController.resetGame();
+      renderBoard();
+      renderStatus();
     });
   }
 
@@ -124,10 +161,27 @@ const DisplayController = (function () {
     });
   }
 
+  function renderStatus() {
+    const currentPlayer = GameController.getCurrentPlayer();
+    status.textContent = `Player ${currentPlayer.toUpperCase()}'s turn`;
+    const winner = GameController.getWinner();
+
+    if (winner !== null) {
+      status.textContent = `Player ${winner.toUpperCase()} wins!`;
+    } else if (GameController.isTie()) {
+      status.textContent = "It's a tie!";
+    } else {
+      const currentPlayer = GameController.getCurrentPlayer();
+      status.textContent = `Player ${currentPlayer.toUpperCase()}'s turn`;
+    }
+  }
+
   addEventListeners();
+  addRestartListener();
   renderBoard();
 
   return {
     renderBoard,
+    renderStatus,
   };
 })();
