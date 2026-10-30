@@ -1,4 +1,3 @@
-let gameOver = false;
 //creating a player
 function createPlayer(name, mark) {
   return {
@@ -8,33 +7,6 @@ function createPlayer(name, mark) {
 }
 const player1 = createPlayer("player1", "x");
 const player2 = createPlayer("player2", "o");
-let currentPlayer = player1;
-function playRound(position) {
-  if (gameBoard[position] === 0 && gameOver === false) {
-    gameBoard[position] = currentPlayer.mark;
-    console.log(gameBoard[position]);
-
-    const winner = checkWinner();
-
-    if (winner !== null) {
-      console.log(`${winner} wins!`);
-      gameOver = true;
-    } else if (checkTie()) {
-      console.log("It's a tie!");
-      gameOver = true;
-    }
-
-    if (currentPlayer === player1) {
-      currentPlayer = player2;
-    } else {
-      currentPlayer = player1;
-    }
-  }
-}
-
-playRound(1);
-playRound(3);
-playRound(7);
 
 const Gameboard = (function () {
   const gameBoard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -93,3 +65,39 @@ const Gameboard = (function () {
     checkTie,
   };
 })();
+
+const GameController = (function () {
+  let currentPlayer = player1;
+  let gameOver = false;
+
+  function playRound(position) {
+    if (Gameboard.getBoard()[position] === 0 && gameOver === false) {
+      Gameboard.placeMark(position, currentPlayer.mark);
+      console.log(Gameboard.getBoard()[position]);
+
+      const winner = Gameboard.checkWinner();
+
+      if (winner !== null) {
+        console.log(`${winner} wins!`);
+        gameOver = true;
+      } else if (Gameboard.checkTie()) {
+        console.log("It's a tie!");
+        gameOver = true;
+      } else {
+        if (currentPlayer === player1) {
+          currentPlayer = player2;
+        } else {
+          currentPlayer = player1;
+        }
+      }
+    }
+  }
+
+  return {
+    playRound,
+  };
+})();
+GameController.playRound(1);
+GameController.playRound(3);
+GameController.playRound(7);
+GameController.playRound(8);
