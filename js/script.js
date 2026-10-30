@@ -97,7 +97,25 @@ const GameController = (function () {
     playRound,
   };
 })();
+
+const DisplayController = (function () {
+  const squares = document.querySelectorAll(".square");
+  function renderBoard() {
+    squares.forEach((square, index) => {
+      const value = Gameboard.getBoard()[index];
+
+      if (value === 0) {
+        square.textContent = "";
+      } else {
+        square.textContent = value;
+      }
+    });
+  }
+  return {
+    renderBoard,
+  };
+})();
 GameController.playRound(1);
 GameController.playRound(3);
 GameController.playRound(7);
-GameController.playRound(8);
+DisplayController.renderBoard();
